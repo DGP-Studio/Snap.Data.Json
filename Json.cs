@@ -39,11 +39,9 @@ namespace Snap.Data.Json
         /// <returns>对象的JSON字符串表示形式</returns>	
         public static string Stringify(object? value, bool indented = true)
         {
-            //set date format string to make it compatible to gachaData
             JsonSerializerSettings jsonSerializerSettings = new()
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore,
+                //NullValueHandling = NullValueHandling.Ignore,
                 //兼容原神api格式
                 DateFormatString = "yyyy'-'MM'-'dd' 'HH':'mm':'ss.FFFFFFFK",
                 Formatting = indented ? Formatting.Indented : Formatting.None,
