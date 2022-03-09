@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
@@ -57,10 +56,17 @@ namespace Snap.Data.Json
         /// <returns>JSON字符串中的反序列化对象, 如果反序列化失败则返回 <see cref="null"/></returns>
         public static T? FromFile<T>(string fileName)
         {
-            //FileShare.Read is important to compat with genshin log file
-            using (StreamReader sr = new(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            if (File.Exists(fileName))
             {
-                return ToObject<T>(sr.ReadToEnd());
+                //FileShare.Read is important to compat with genshin log file
+                using (StreamReader sr = new(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                {
+                    return ToObject<T>(sr.ReadToEnd());
+                }
+            }
+            else
+            {
+                return default;
             }
         }
 
@@ -101,7 +107,6 @@ namespace Snap.Data.Json
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("由于直接使用了单个HttpClient, 可能会出现端口问题")]
         public static async Task<T?> FromWebsiteAsync<T>(string url)
         {
             using (HttpClient client = new())
