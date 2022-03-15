@@ -13,7 +13,7 @@ namespace Snap.Data.Json
         /// </summary>	
         /// <typeparam name="T">要反序列化的对象的类型</typeparam>	
         /// <param name="value">要反序列化的JSON</param>	
-        /// <returns>JSON字符串中的反序列化对象, 如果反序列化失败则返回 <see cref="null"/></returns>	
+        /// <returns>JSON字符串中的反序列化对象, 如果反序列化失败会抛出异常</returns>	
         public static T? ToObject<T>(string value)
         {
             return JsonConvert.DeserializeObject<T>(value);
