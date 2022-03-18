@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Snap.Data.Json
@@ -107,11 +108,11 @@ namespace Snap.Data.Json
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static async Task<T?> FromWebsiteAsync<T>(string url)
+        public static async Task<T?> FromWebsiteAsync<T>(string url, CancellationToken cancellationToken = default)
         {
             using (HttpClient client = new())
             {
-                string response = await client.GetStringAsync(url);
+                string response = await client.GetStringAsync(url, cancellationToken);
                 return ToObject<T>(response);
             }
         }
