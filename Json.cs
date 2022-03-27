@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -107,14 +107,21 @@ namespace Snap.Data.Json
             File.WriteAllText(fileName, Stringify(value));
         }
 
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        // HttpClient is intended to be instantiated once per application, rather than per-use.
+        private static readonly Lazy<HttpClient> LazyHttpClient = new(() =>
+        {
+            HttpClient client = new()
+            {
+                Timeout = Timeout.InfiniteTimeSpan
+            };
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Snap.Json");
+            return client;
+        });
+
         public static async Task<T?> FromWebsiteAsync<T>(string url, CancellationToken cancellationToken = default)
         {
-            using (HttpClient client = new())
-            {
-                string response = await client.GetStringAsync(url, cancellationToken);
-                return ToObject<T>(response);
-            }
+            string response = await LazyHttpClient.Value.GetStringAsync(url, cancellationToken);
+            return ToObject<T>(response);
         }
     }
 }
