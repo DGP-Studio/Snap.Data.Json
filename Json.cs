@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +18,16 @@ namespace Snap.Data.Json
         /// <returns>JSON字符串中的反序列化对象, 如果反序列化失败会抛出异常</returns>	
         public static T? ToObject<T>(string value)
         {
-            return JsonConvert.DeserializeObject<T>(value);
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(value);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(value);
+                Debug.WriteLine(ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -107,7 +117,6 @@ namespace Snap.Data.Json
             File.WriteAllText(fileName, Stringify(value));
         }
 
-        // HttpClient is intended to be instantiated once per application, rather than per-use.
         private static readonly Lazy<HttpClient> LazyHttpClient = new(() =>
         {
             HttpClient client = new()
