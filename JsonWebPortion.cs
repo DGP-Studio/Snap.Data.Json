@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,6 +32,19 @@ namespace Snap.Data.Json
         {
             string response = await LazyHttpClient.Value.GetStringAsync(url, cancellationToken);
             return ToObject<T>(response);
+        }
+
+        /// <summary>
+        /// 将网页内容保存到本地
+        /// </summary>
+        /// <param name="url">链接</param>
+        /// <param name="filePath">文件地址</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>任务</returns>
+        public static async Task WebsiteToFileAsync(string url, string filePath, CancellationToken cancellationToken = default)
+        {
+            string response = await LazyHttpClient.Value.GetStringAsync(url, cancellationToken);
+            await File.WriteAllTextAsync(filePath, response, cancellationToken);
         }
     }
 }
